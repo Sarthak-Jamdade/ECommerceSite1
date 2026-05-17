@@ -1,263 +1,882 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECommerce Site</title>
+    <title>Cara — Premium Shopping</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        /* =============================================
+           INDEX PAGE — SCOPED STYLES
+        ============================================= */
+
+        /* Loading Screen */
+        .Loading {
+            position: fixed;
+            width: 100%; height: 100%;
+            background: #050816;
+            top: 0; left: 0;
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .Loading.hidden { opacity: 0; pointer-events: none; }
+        .loader-ring {
+            width: 60px; height: 60px;
+            border: 3px solid rgba(0,255,242,0.15);
+            border-top: 3px solid #00fff2;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Hero */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            margin-top: 0;
+            padding: 160px 80px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 70% 50%, rgba(0,255,242,0.12), transparent 45%),
+                linear-gradient(135deg, #050816, #0b1120, #111827);
+        }
+        #hero::before {
+            content: "";
+            position: absolute;
+            right: -2%;
+            bottom: 0;
+            width: 65%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='Hero Section/hero4.png') }}");
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: bottom right;
+            z-index: 1;
+        }
+        #hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right,
+                rgba(5,8,22,0.96) 20%,
+                rgba(5,8,22,0.65) 50%,
+                transparent 78%);
+            z-index: 0;
+        }
+        #hero > * { position: relative; z-index: 2; max-width: 600px; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0,255,242,0.1);
+            border: 1px solid rgba(0,255,242,0.25);
+            border-radius: 30px;
+            color: #00fff2;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-badge span {
+            width: 6px; height: 6px;
+            background: #00fff2;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            display: inline-block;
+        }
+        @keyframes pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.4); }
+        }
+
+        #hero h1 {
+            font-size: 68px;
+            line-height: 1.08;
+            background: linear-gradient(135deg, #ffffff 30%, #00fff2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px;
+        }
+        #hero p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 36px;
+            line-height: 1.7;
+            max-width: 480px;
+        }
+        .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+        .hero-btn-primary {
+            padding: 16px 36px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #00fff2, #088178);
+            color: #050816;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s ease;
+            box-shadow: 0 0 20px rgba(0,255,242,0.3);
+        }
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0,255,242,0.5);
+        }
+        .hero-btn-secondary {
+            padding: 16px 36px;
+            border-radius: 50px;
+            background: transparent;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .hero-btn-secondary:hover {
+            border-color: #00fff2;
+            color: #00fff2;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 36px;
+            margin-top: 56px;
+        }
+        .hero-stat h3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #00fff2;
+            margin: 0;
+        }
+        .hero-stat p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin: 2px 0 0;
+        }
+        .hero-stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Features */
+        #feature {
+            padding: 80px 80px 60px;
+            position: relative;
+        }
+        .feature-heading { text-align: center; margin-bottom: 50px; }
+        .feature-heading h2 {
+            font-size: 42px;
+            color: white;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .feature-heading p {
+            color: rgba(255,255,255,0.5);
+            font-size: 16px;
+            margin: 0;
+        }
+        .feature-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+        .fe-box {
+            padding: 24px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            transition: 0.3s ease;
+            cursor: default;
+        }
+        .fe-box:hover {
+            background: rgba(0,255,242,0.06);
+            border-color: rgba(0,255,242,0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0,255,242,0.1);
+        }
+        .fe-box img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        .fe-box h6 {
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            background: rgba(255,255,255,0.08);
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-header h2 {
+            font-size: 38px;
+            color: white;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .section-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 15px;
+            margin: 0;
+        }
+        .section-line {
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, #00fff2, #088178);
+            border-radius: 10px;
+            margin: 12px auto 0;
+        }
+
+        /* Products Grid */
+        #product1, #product2 {
+            padding: 60px 80px;
+        }
+        .pro-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .pro {
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s ease;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .pro.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .pro:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0,255,242,0.25);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,255,242,0.1);
+        }
+        .pro-img-wrap {
+            width: 100%;
+            height: 220px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .pro-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 12px;
+            transition: transform 0.4s ease;
+        }
+        .pro:hover .pro-img-wrap img { transform: scale(1.06); }
+        .pro .des {
+            padding: 16px;
+        }
+        .pro .des span {
+            font-size: 12px;
+            color: #00fff2;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pro .des h5 {
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+            margin: 6px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .pro .des h5 a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .pro .des .star { margin: 4px 0; }
+        .pro .des .star i { font-size: 11px; color: gold; }
+        .pro .des h4 {
+            font-size: 18px;
+            color: #00fff2;
+            font-weight: 700;
+            margin: 6px 0 0;
+        }
+        .pro .Cart {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(0,255,242,0.1);
+            border: 1px solid rgba(0,255,242,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00fff2;
+            font-size: 14px;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .pro .Cart:hover {
+            background: #00fff2;
+            color: #050816;
+        }
+
+        /* Banner */
+        #banner {
+            margin: 0 80px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #088178, #00fff2);
+            padding: 60px 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+        #banner::before {
+            content: "";
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        #banner h4 { color: rgba(255,255,255,0.8); font-size: 14px; }
+        #banner h2 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            margin: 8px 0;
+        }
+        #banner h2 span { color: #050816; }
+        #banner button {
+            padding: 14px 32px;
+            background: white;
+            color: #088178;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        #banner button:hover {
+            background: #050816;
+            color: #00fff2;
+        }
+
+        /* Small Banners */
+        #sm-banner {
+            padding: 40px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        #sm-banner .banner-box {
+            border-radius: 20px;
+            height: 260px;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-image: url("{{ url_for('static', filename='Banner/b17.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        #sm-banner .banner-box::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(5,8,22,0.75), rgba(5,8,22,0.3));
+        }
+        #sm-banner .banner-box:nth-child(2) {
+            background-image: url("{{ url_for('static', filename='Banner/b10.jpg') }}");
+        }
+        #sm-banner .banner-box > * { position: relative; z-index: 1; }
+        #sm-banner h4 { color: rgba(255,255,255,0.7); font-size: 14px; }
+        #sm-banner h2 { color: white; font-size: 26px; font-weight: 800; margin: 6px 0; }
+        #sm-banner span { color: rgba(255,255,255,0.7); font-size: 13px; display: block; margin-bottom: 16px; }
+        #sm-banner button.white {
+            padding: 10px 24px;
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: fit-content;
+        }
+        #sm-banner button.white:hover { background: white; color: #050816; }
+
+        /* Banner 3 */
+        #banner3 {
+            padding: 0 80px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        #banner3 .banner-box {
+            border-radius: 20px;
+            height: 220px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            background-image: url("{{ url_for('static', filename='Banner/b7.jpg') }}");
+            background-size: cover;
+            background-position: center;
+        }
+        #banner3 .banner-box:nth-child(2) {
+            background-image: url("{{ url_for('static', filename='Banner/b4.jpg') }}");
+        }
+        #banner3 .banner-box:nth-child(3) {
+            background-image: url("{{ url_for('static', filename='Banner/b18.jpg') }}");
+        }
+        #banner3 .banner-box::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5,8,22,0.85) 30%, transparent);
+        }
+        #banner3 .banner-box > * { position: relative; z-index: 1; }
+        #banner3 h2 { color: white; font-size: 18px; font-weight: 800; margin: 0 0 4px; }
+        #banner3 h3 { color: #00fff2; font-size: 12px; font-weight: 700; margin: 0; }
+
+        /* Newsletter */
+        #newsLetter {
+            margin: 20px 80px 60px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #041e42, #0d2137);
+            padding: 50px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(0,255,242,0.1);
+        }
+        #newsLetter h4 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        #newsLetter p { color: rgba(255,255,255,0.5); font-size: 14px; margin: 0; }
+        #newsLetter p span { color: #ffbd27; }
+        .newsletter-form {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-shrink: 0;
+        }
+        .newsletter-form input {
+            width: 280px;
+            padding: 14px 20px;
+            border-radius: 50px 0 0 50px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-right: none;
+        }
+        .newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+        .newsletter-form button {
+            padding: 14px 24px;
+            border-radius: 0 50px 50px 0;
+            background: #ffbd27;
+            color: #000;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .newsletter-form button:hover { background: #088178; color: white; }
+
+        /* =============================================
+           RESPONSIVE
+        ============================================= */
+
+        /* Tablet */
+        @media (max-width: 1100px) {
+            .feature-container { grid-template-columns: repeat(3, 1fr); }
+            .pro-container { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            #hero { padding: 140px 40px 60px; }
+            #hero h1 { font-size: 48px; }
+            #hero::before { width: 55%; opacity: 0.4; }
+            #feature { padding: 60px 40px; }
+            #product1, #product2 { padding: 50px 40px; }
+            #banner { margin: 0 40px; padding: 40px; flex-direction: column; text-align: center; }
+            #sm-banner { padding: 30px 40px; }
+            #banner3 { padding: 0 40px 30px; }
+            #newsLetter { margin: 20px 40px 50px; padding: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            #hero { padding: 130px 24px 50px; min-height: 85vh; }
+            #hero h1 { font-size: 38px; }
+            #hero p { font-size: 15px; }
+            #hero::before { display: none; }
+            #hero::after { background: rgba(5,8,22,0.7); }
+            .hero-stats { gap: 20px; }
+            .hero-stat h3 { font-size: 22px; }
+
+            #feature { padding: 50px 24px; }
+            .feature-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+            #product1, #product2 { padding: 40px 24px; }
+            .section-header h2 { font-size: 28px; }
+            .pro-container { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+            #banner { margin: 0 24px; padding: 30px 24px; }
+            #banner h2 { font-size: 22px; }
+
+            #sm-banner { padding: 24px; grid-template-columns: 1fr; }
+            #sm-banner .banner-box { height: 200px; }
+
+            #banner3 { padding: 0 24px 24px; grid-template-columns: 1fr; }
+            #banner3 .banner-box { height: 180px; }
+
+            #newsLetter { margin: 20px 24px 40px; padding: 30px 24px; flex-direction: column; }
+            .newsletter-form { width: 100%; }
+            .newsletter-form input { width: 100%; flex: 1; }
+        }
+
+        @media (max-width: 480px) {
+            #hero { padding: 110px 16px 40px; }
+            #hero h1 { font-size: 30px; }
+            .hero-btns { flex-direction: column; }
+            .hero-btn-primary, .hero-btn-secondary { width: 100%; justify-content: center; }
+            .hero-stats { gap: 16px; }
+            .hero-stat-divider { display: none; }
+
+            .feature-container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .fe-box { padding: 16px 10px; }
+
+            .pro-container { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .pro-img-wrap { height: 160px; }
+            .pro .des h5 { font-size: 12px; }
+            .pro .des h4 { font-size: 15px; }
+
+            #banner { border-radius: 16px; }
+            #newsLetter { border-radius: 16px; }
+            .newsletter-form { flex-direction: column; gap: 10px; }
+            .newsletter-form input {
+                width: 100%;
+                border-radius: 50px;
+                border-right: 1px solid rgba(255,255,255,0.1);
+            }
+            .newsletter-form button { border-radius: 50px; width: 100%; }
+        }
+    </style>
 </head>
 
 <body class="darkMode">
-    <!-- Loading Scrren Play Video -->
-    <div class="Loading">
-        <video src="{{ url_for('static', filename='Hero Section/LoadingBasket.gif') }}" autoplay muted loop></video>
-    </div>
-    <header>
 
+    <!-- Loading Screen -->
+    <div class="Loading" id="loadingScreen">
+        <div class="loader-ring"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
         <a href="/home" class="logo">
-            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo" alt="Cara">
         </a>
 
         <ul id="nav-links">
-            <li><a href="/home">Home</a></li>
+            <i class="fas fa-times" id="close"></i>
+            <li><a href="/home" class="active">Home</a></li>
             <li><a href="/shop">Shop</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
         </ul>
 
-        <!-- AUTH SECTION -->
         <div class="auth-nav">
-
             {% if user %}
-
-            <!-- LOGGED IN → SHOW PROFILE -->
             <div class="profile-dropdown">
-
                 <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
-
                 <span class="profile-name">{{ user.name }}</span>
-
-                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
-
+                <i class="fas fa-chevron-down" style="font-size:11px; color:white;"></i>
                 <div class="dropdown-menu">
-
                     {% if user.role == 'admin' %}
-                    <a href="/admin/orders">
-                        <i class="fas fa-cog"></i> Admin Panel
-                    </a>
+                    <a href="/admin/orders"><i class="fas fa-cog"></i> Admin Panel</a>
                     {% elif user.role == 'seller' %}
-                    <a href="/seller/dashboard">
-                        <i class="fas fa-store"></i> Seller Dashboard
-                    </a>
+                    <a href="/seller/dashboard"><i class="fas fa-store"></i> Seller Dashboard</a>
                     {% endif %}
-
-                    <a href="/cart">
-                        <i class="fas fa-shopping-cart"></i> My Cart
-                    </a>
-
-                    <a href="/logout" style="color: #e74c3c;">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> My Cart</a>
+                    <a href="/logout" style="color:#e74c3c !important;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
-
             {% else %}
-
-            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
             <a href="/login" class="btn-signin">Sign In</a>
             <a href="/register" class="btn-signup">Sign Up</a>
-
             {% endif %}
-
         </div>
 
+        <div id="mobile">
+            <a href="/cart" style="color:white; font-size:20px; margin-right:16px;">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+            <i class="fas fa-bars" id="bar"></i>
+        </div>
     </header>
 
+    <!-- ── HERO ── -->
     <section id="hero">
-        <h4>Trade-in-offer</h4>
-        <h2>Super value deals</h2>
-        <h1>On all products</h1>
-        <p>Save more with coupons & up to 70% off!</p>
-        <button>Shop Now</button>
+        <div class="hero-badge">
+            <span></span> New Collection 2025
+        </div>
+        <h1>Super Value<br>Deals On All<br>Products</h1>
+        <p>Save more with coupons &amp; up to 70% off on thousands of premium products.</p>
+        <div class="hero-btns">
+            <a href="/shop" class="hero-btn-primary">
+                Shop Now <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="/about" class="hero-btn-secondary">
+                Learn More <i class="fas fa-info-circle"></i>
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <h3>20K+</h3>
+                <p>Products</p>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <h3>50K+</h3>
+                <p>Customers</p>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <h3>4.8★</h3>
+                <p>Rating</p>
+            </div>
+        </div>
     </section>
 
+    <!-- ── FEATURES ── -->
     <section id="feature" class="section-p1">
         <div class="feature-heading">
-
             <h2>Why Shop With Us</h2>
-
-            <p>Premium Services For Better Shopping Experience</p>
-
+            <p>Premium services for a better shopping experience</p>
         </div>
         <div class="feature-container">
             <div class="fe-box reveal">
-                <!-- <img src="Features/f1.png" alt=""> -->
-                <img src="{{ url_for('static', filename='Features/f1.png') }}">
+                <img src="{{ url_for('static', filename='Features/f1.png') }}" alt="Free Shipping">
                 <h6>Free Shipping</h6>
             </div>
             <div class="fe-box reveal">
-                <!-- <img src="Features/f2.png" alt=""> -->
-                <img src="{{ url_for('static', filename='Features/f2.png') }}">
-                <h6>Online order</h6>
+                <img src="{{ url_for('static', filename='Features/f2.png') }}" alt="Online Order">
+                <h6>Online Order</h6>
             </div>
             <div class="fe-box reveal">
-                <!-- <img src="Features/f3.png" alt=""> -->
-                <img src="{{ url_for('static', filename='Features/f3.png') }}">
+                <img src="{{ url_for('static', filename='Features/f3.png') }}" alt="Save Money">
                 <h6>Save Money</h6>
             </div>
             <div class="fe-box reveal">
-                <!-- <img src="Features/f4.png" alt=""> -->
-                <img src="{{ url_for('static', filename='Features/f4.png') }}">
-                <h6>Promotion</h6>
+                <img src="{{ url_for('static', filename='Features/f4.png') }}" alt="Promotions">
+                <h6>Promotions</h6>
             </div>
             <div class="fe-box reveal">
-                <!-- <img src="Features/f5.png" alt="">  -->
-                <img src="{{ url_for('static', filename='Features/f5.png') }}">
+                <img src="{{ url_for('static', filename='Features/f5.png') }}" alt="Happy Sell">
                 <h6>Happy Sell</h6>
             </div>
             <div class="fe-box reveal">
-                <!-- <img src="Features/f6.png" alt=""> -->
-                <img src="{{ url_for('static', filename='Features/f6.png') }}">
-                <h6>F24/7 Support</h6>
+                <img src="{{ url_for('static', filename='Features/f6.png') }}" alt="24/7 Support">
+                <h6>24/7 Support</h6>
             </div>
         </div>
     </section>
 
+    <!-- ── FEATURED PRODUCTS ── -->
     <section id="product1" class="section-p1">
-        <h2 class="reveal">Featured Products</h2>
-        <p class="reveal">Summer Collection New Modern Design</p>
+        <div class="section-header">
+            <h2>Featured Products</h2>
+            <p>Handpicked for you this season</p>
+            <div class="section-line"></div>
+        </div>
         <div class="pro-container">
-
             {% for p in products %}
-
             <div class="pro reveal">
                 <a href="{{ url_for('product', p_id=p.p_id) }}">
-                    <img src="{{ p.img }}" alt="product">
+                    <div class="pro-img-wrap">
+                        <img src="{{ p.img }}" alt="{{ p.name }}" loading="lazy">
+                    </div>
                 </a>
                 <div class="des">
                     <span>{{ p.brand }}</span>
                     <h5>
-                        <a href="{{ url_for('product', p_id=p.p_id) }}" style="color: inherit; text-decoration: none;">
-                            {{ p.name }}
-                        </a>
+                        <a href="{{ url_for('product', p_id=p.p_id) }}">{{ p.name }}</a>
                     </h5>
                     <div class="star">
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fa-regular fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
                     </div>
-                    <h4>₹{{ p.price }}</h4>
+                    <h4>₹{{ "%.0f"|format(p.price) }}</h4>
                 </div>
-                <a href="#"><i class="fas fa-shopping-cart Cart"></i></a>
+                <a href="{{ url_for('product', p_id=p.p_id) }}" class="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
             </div>
-
             {% endfor %}
-
         </div>
     </section>
-    <section id="banner" class="section-m1 section-p1 reveal reveal">
-        <h4>Repair Services</h4>
-        <h2>Up to <span>70% off</span>- All t- shirts & Accessories</h2>
-        <button class="noraml">Explore Now</button>
+
+    <!-- ── PROMO BANNER ── -->
+    <section id="banner" class="section-m1 reveal">
+        <div>
+            <h4>Repair Services</h4>
+            <h2>Up to <span>70% off</span> — All T‑shirts &amp; Accessories</h2>
+        </div>
+        <button onclick="location.href='/shop'">Explore Now</button>
     </section>
 
+    <!-- ── NEW ARRIVALS ── -->
     <section id="product2" class="section-p1">
-        <h2 class="reveal">New Arrivals</h2>
-        <p class="reveal">Summer Collection New Modern Design</p>
+        <div class="section-header">
+            <h2>New Arrivals</h2>
+            <p>Fresh drops — just landed</p>
+            <div class="section-line"></div>
+        </div>
         <div class="pro-container">
-
             {% for p in new_products %}
-
             <div class="pro reveal-left">
-
-                <img src="{{ p.img }}" alt="product">
-
-                <div class="des">
-
-                    <span>{{ p.brand }}</span>
-
-                    <h5>{{ p.name }}</h5>
-
-                    <div class="star">
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fas fa-star" style="color: gold;"></i>
-                        <i class="fa-regular fa-star" style="color: gold;"></i>
+                <a href="{{ url_for('product', p_id=p.p_id) }}">
+                    <div class="pro-img-wrap">
+                        <img src="{{ p.img }}" alt="{{ p.name }}" loading="lazy">
                     </div>
-
-                    <h4>₹{{ p.price }}</h4>
-
+                </a>
+                <div class="des">
+                    <span>{{ p.brand }}</span>
+                    <h5>
+                        <a href="{{ url_for('product', p_id=p.p_id) }}">{{ p.name }}</a>
+                    </h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                    <h4>₹{{ "%.0f"|format(p.price) }}</h4>
                 </div>
-
-                <a href="#"><i class="fas fa-shopping-cart Cart"></i></a>
-
+                <a href="{{ url_for('product', p_id=p.p_id) }}" class="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
             </div>
-
             {% endfor %}
-
         </div>
     </section>
 
+    <!-- ── SMALL BANNERS ── -->
     <section id="sm-banner" class="section-p1">
         <div class="banner-box reveal-left">
-            <h4>Crazy deals</h4>
-            <h2>Buy 1 get 1 free</h2>
-            <span>The best classic dress is on sale at cara</span>
+            <h4>Crazy Deals</h4>
+            <h2>Buy 1 Get 1 Free</h2>
+            <span>The best classic dress is on sale at Cara</span>
             <button class="white">Learn More</button>
         </div>
         <div class="banner-box reveal-left">
-            <h4>Spring/Summer</h4>
-            <h2>Upcomming season</h2>
-            <span>The best classic dress is on sale at cara</span>
+            <h4>Spring / Summer</h4>
+            <h2>Upcoming Season</h2>
+            <span>The best classic dress is on sale at Cara</span>
             <button class="white">Collection</button>
         </div>
     </section>
 
+    <!-- ── BANNER 3 ── -->
     <section id="banner3">
         <div class="banner-box reveal-left">
             <h2>SEASON SALE</h2>
-            <h3>Winter Collection -50% OFF</h3>
+            <h3>Winter Collection — 50% OFF</h3>
         </div>
         <div class="banner-box reveal-left">
-            <h2>NEW FOOTWEAR COLLECTION</h2>
+            <h2>NEW FOOTWEAR</h2>
             <h3>Spring / Summer 2025</h3>
         </div>
         <div class="banner-box reveal-left">
-            <h2>T-SHIRTS</h2>
+            <h2>T‑SHIRTS</h2>
             <h3>New Trendy Prints</h3>
         </div>
     </section>
 
-    <section id="newsLetter" class="section-m1 section-p1 reveal">
-        <div class="newsText reveal">
-            <h4>Sign Up for NewsLetter</h4>
-            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+    <!-- ── NEWSLETTER ── -->
+    <section id="newsLetter" class="section-m1 reveal">
+        <div class="newsText">
+            <h4>Sign Up for Newsletter</h4>
+            <p>Get email updates about our latest shop and <span>special offers.</span></p>
         </div>
-        <div class="form reveal-left">
-            <input type="text" placeholder="Your email address">
-            <button class="normal">Sign Up</button>
-            <a href="javascript:void(0)" id="open-modal">Don't have account</a>
+        <div class="newsletter-form">
+            <input type="email" placeholder="Your email address">
+            <button>Sign Up</button>
         </div>
     </section>
+
+    <!-- ── FOOTER ── -->
     <footer class="section-p1 reveal">
         <div class="col">
-            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="Cara">
             <h4>Contact</h4>
             <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
-            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
-            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <p><strong>Phone:</strong> +01 2222 365 / (+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 – 18:00, Mon – Sat</p>
             <div class="follow">
                 <h4>Follow us</h4>
-                <div class="icon reveal-left">
+                <div class="icon">
                     <i class="fab fa-facebook-f"></i>
                     <i class="fab fa-twitter"></i>
                     <i class="fab fa-instagram"></i>
@@ -268,16 +887,16 @@
         </div>
         <div class="col">
             <h4>About</h4>
-            <a href="#">About us</a>
+            <a href="/about">About us</a>
             <a href="#">Delivery Information</a>
             <a href="#">Privacy Policy</a>
-            <a href="#">Terms & Conditions</a>
-            <a href="#">Contact Us</a>
+            <a href="#">Terms &amp; Conditions</a>
+            <a href="/contact">Contact Us</a>
         </div>
         <div class="col">
             <h4>My Account</h4>
-            <a href="#">Sign In</a>
-            <a href="#">View Cart</a>
+            <a href="/login">Sign In</a>
+            <a href="/cart">View Cart</a>
             <a href="#">My Wishlist</a>
             <a href="#">Track My Order</a>
             <a href="#">Help</a>
@@ -286,17 +905,17 @@
             <h4>Install App</h4>
             <p>From App Store or Google Play</p>
             <div class="row">
-                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="">
-                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="App Store">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="Google Play">
             </div>
             <p>Secured Payment Gateways</p>
-            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="">
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="Payment">
         </div>
         <div class="copyright">
-            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+            <p>© 2025, Cara — Premium Ecommerce</p>
         </div>
     </footer>
-    <!-- Password visibility toggle and flash message handling and login password toggle  -->
+
     <!-- Account Modal -->
     <div id="account-modal" class="modal">
         <div class="modal-content">
@@ -304,28 +923,62 @@
             <h2>Create an Account</h2>
             <div id="flash-message" class="flash-message"></div>
             <form id="register-form">
-                <input type="text" class="Cleartext" placeholder="Full Name" required>
-                <input type="email" class="CleartextEmail" placeholder="Email" required>
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email" required>
                 <div class="password-wrapper">
-                    <input type="password" class="CleartextPassword" placeholder="Password" required>
+                    <input type="password" placeholder="Password" required>
                     <i class="fa-solid fa-eye toggle-password" id="toggle-pwd"></i>
                 </div>
-                <button type="submit" class="normal" id="closed">Register</button>
+                <button type="submit" class="normal">Register</button>
             </form>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-
     <script>
-
-        document.getElementById("changeTheme")?.addEventListener("click", () => {
-
-            document.body.classList.toggle("darkMode");
-
+        // ── Loading screen ──
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                document.getElementById("loadingScreen").classList.add("hidden");
+            }, 800);
         });
 
+        // ── Mobile nav ──
+        const bar   = document.getElementById("bar");
+        const close = document.getElementById("close");
+        const nav   = document.getElementById("nav-links");
+        if (bar)   bar.addEventListener("click",   () => nav.classList.add("active"));
+        if (close) close.addEventListener("click", () => nav.classList.remove("active"));
+
+        // ── Scroll reveal ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add("active");
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .pro, .fe-box")
+            .forEach(el => observer.observe(el));
+
+        // ── Dark mode toggle ──
+        document.getElementById("changeTheme")?.addEventListener("click", () => {
+            document.body.classList.toggle("darkMode");
+        });
+
+        // ── Modal ──
+        document.getElementById("open-modal")?.addEventListener("click", () => {
+            document.getElementById("account-modal").style.display = "flex";
+        });
+        document.querySelector(".close-btn")?.addEventListener("click", () => {
+            document.getElementById("account-modal").style.display = "none";
+        });
+        window.addEventListener("click", (e) => {
+            const modal = document.getElementById("account-modal");
+            if (e.target === modal) modal.style.display = "none";
+        });
     </script>
-
 </body>
-
 </html>
