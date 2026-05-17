@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
+<body class="darkMode">
+
+    <div class="auth-wrapper">
+        <div class="auth-container">
+
+            <h2>📝 Create Account</h2>
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="flash-msg {{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endwith %}
+
+            <!-- REGISTER FORM -->
+            <form action="/register" method="POST" enctype="multipart/form-data">
+
+                <!-- PROFILE PHOTO UPLOAD -->
+                <div class="photo-upload">
+                    <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        class="photo-preview" alt="Profile Photo">
+                    <label class="photo-label">
+                        📷 Upload Profile Photo
+                        <input type="file" name="profile_photo" accept="image/*" style="display:none;"
+                            onchange="previewPhoto(this)">
+                    </label>
+                </div>
+
+                <!-- NAME -->
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <!-- PHONE -->
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" placeholder="Enter your phone number">
+                </div>
+
+                <!-- ADDRESS -->
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" placeholder="Enter your full address"></textarea>
+                </div>
+
+                <!-- ROLE -->
+                <div class="form-group">
+                    <label>Register As</label>
+                    <select name="role">
+                        <option value="customer">🛒 Customer</option>
+                        <option value="seller">🏪 Seller</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    Create Account
+                </button>
+
+            </form>
+
+            <div class="divider">or continue with</div>
+
+            <!-- GOOGLE SIGNUP -->
+            <a href="/google-login" class="btn-google">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                Continue with Google
+            </a>
+
+            <div class="auth-footer">
+                Already have an account?
+                <a href="/login">Login</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // PROFILE PHOTO PREVIEW
+        function previewPhoto(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("photoPreview").src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

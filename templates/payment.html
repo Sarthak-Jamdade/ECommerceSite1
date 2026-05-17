@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
+<body class="darkMode">
+
+   <header>
+
+    <a href="/home" class="logo">
+        <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+    </a>
+
+    <ul id="nav-links">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/shop">Shop</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+
+    <!-- AUTH SECTION -->
+    <div class="auth-nav">
+
+        {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}"
+                     alt="{{ user.name }}"
+                     class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                        <a href="/admin/orders">
+                            <i class="fas fa-cog"></i> Admin Panel
+                        </a>
+                    {% elif user.role == 'seller' %}
+                        <a href="/seller/dashboard">
+                            <i class="fas fa-store"></i> Seller Dashboard
+                        </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+        {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login"    class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+        {% endif %}
+
+    </div>
+
+</header>
+
+    <div class="payment-wrapper">
+        <div class="payment-container">
+
+            <h2>💳 Secure Payment</h2>
+
+            <!-- ORDER SUMMARY -->
+            <div class="order-summary">
+                <p class="Title"><strong>Customer:</strong> {{ customer_name }}</p>
+                <p class="Title"><strong>Email:</strong> {{ customer_email }}</p>
+                <p class="total">Total Amount: ₹{{ total_amount }}</p>
+            </div>
+
+            <!-- PAYMENT FORM -->
+            <form action="/payment-success" method="POST">
+
+                <!-- Hidden Order Fields -->
+                {% for i in range(order_ids|length) %}
+                <input type="hidden" name="order_id" value="{{ order_ids[i] }}">
+                <input type="hidden" name="p_id" value="{{ p_ids[i] }}">
+                <input type="hidden" name="price" value="{{ prices[i] }}">
+                <input type="hidden" name="quantity" value="{{ quantities[i] }}">
+                {% endfor %}
+
+                <!-- PAYMENT MODE -->
+                <div class="form-group">
+                    <label>Select Payment Mode</label>
+                    <select name="payment_mode" id="paymentMode" required onchange="showFields(this.value)">
+                        <option value="">-- Choose Payment Mode --</option>
+                        <option value="Credit Card">💳 Credit Card</option>
+                        <option value="Debit Card">💳 Debit Card</option>
+                        <option value="UPI">📱 UPI</option>
+                        <option value="Net Banking">🏦 Net Banking</option>
+                        <option value="Cash On Delivery">🚚 Cash On Delivery</option>
+                    </select>
+                </div>
+
+                <div class="divider">Fill in your payment details</div>
+
+                <!-- CARD FIELDS (shown for Credit/Debit Card) -->
+                <div class="optional-fields" id="cardFields">
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" name="card_number" placeholder="1234 5678 9012 3456" maxlength="16">
+                    </div>
+                    <div class="form-group">
+                        <label>Cardholder Name</label>
+                        <input type="text" name="card_name" placeholder="Name on Card">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Expiry Date</label>
+                            <input type="text" name="expiry" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>CVV</label>
+                            <input type="text" name="cvv" placeholder="CVV" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPI FIELD (shown for UPI) -->
+                <div class="optional-fields" id="upiFields">
+                    <div class="form-group">
+                        <label>UPI ID</label>
+                        <input type="text" name="upi_id" placeholder="yourname@upi">
+                    </div>
+                </div>
+
+                <!-- NET BANKING FIELD -->
+                <div class="optional-fields" id="netBankingFields">
+                    <div class="form-group">
+                        <label>Select Bank</label>
+                        <select name="bank">
+                            <option value="">-- Select Bank --</option>
+                            <option>SBI</option>
+                            <option>HDFC</option>
+                            <option>ICICI</option>
+                            <option>Axis Bank</option>
+                            <option>Kotak</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- PAY BUTTON -->
+                <button type="submit" class="btn-pay">
+                    ✅ Confirm & Pay ₹{{ total_amount }}
+                </button>
+
+                <!-- SECURE BADGE -->
+                <div class="secure-badge">
+                    <i class="fas fa-lock"></i> 100% Secure & Encrypted Payment
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <footer class="section-p1" id="footer">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="/cart">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="App Store">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="Google Play">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="Payment Gateways">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // SHOW FIELDS BASED ON PAYMENT MODE
+        function showFields(mode) {
+
+            // Hide all optional fields first
+            document.getElementById("cardFields").style.display = "none";
+            document.getElementById("upiFields").style.display = "none";
+            document.getElementById("netBankingFields").style.display = "none";
+
+            // Show relevant fields
+            if (mode === "Credit Card" || mode === "Debit Card") {
+                document.getElementById("cardFields").style.display = "block";
+            } else if (mode === "UPI") {
+                document.getElementById("upiFields").style.display = "block";
+            } else if (mode === "Net Banking") {
+                document.getElementById("netBankingFields").style.display = "block";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

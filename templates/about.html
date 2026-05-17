@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>About — Ecommerce Site</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="darkMode">
+    <header>
+
+        <a href="/home" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+        </a>
+
+        <ul id="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <!-- AUTH SECTION -->
+        <div class="auth-nav">
+
+            {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                    <a href="/admin/orders">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>
+                    {% elif user.role == 'seller' %}
+                    <a href="/seller/dashboard">
+                        <i class="fas fa-store"></i> Seller Dashboard
+                    </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+            {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login" class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+    <!-- Hero: wide image + mission -->
+    <section id="hero" style="padding:48px 20px;background: linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);">
+        <div style="max-width:1200px;margin:0 auto;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+            <div style="flex:1;min-width:300px">
+                <h4>About Us</h4>
+                <h1 style="margin:8px 0 12px">Our mission: better shopping for everyone</h1>
+                <p style="margin:0 0 16px;max-width:560px">We source thoughtfully, price fairly and support our
+                    customers at every step — because great products deserve great service.</p>
+                <a href="/shop" class="normal">Browse our collection</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values / three columns -->
+    <section class="section-p1"
+        style="max-width:1200px;margin:15px auto; display: flex; flex-direction: column; gap: 36px; align-items: center;">
+        <div class="feature-heading">
+            <h2>What we stand for</h2>
+            <p>Values that guide everything we do</p>
+        </div>
+        <div class="feature-container"
+            style="display:flex;gap:18px;flex-wrap:wrap; justify-content:center; align-items:stretch; margin-bottom: 100px;">
+            <div class="fe-box reveal"
+                style="flex:1;min-width:170px; height: 300px;text-align:center;padding:20px; display: flex; flex-direction: column; justify-content: center;">
+                <img src="{{ url_for('static', filename='Features/f3.png') }}" alt="" style="height:60px">
+                <h6 style="font-size: 17px"> Fair Prices</h6>
+                <p style="font-size:12px;color:#666">We negotiate direct with suppliers and keep margins low.</p>
+            </div>
+            <div class="fe-box reveal"
+                style="flex:1;min-width:170px; height: 300px;text-align:center;padding:20px; display: flex; flex-direction: column; justify-content: center;">
+                <img src="{{ url_for('static', filename='Features/f5.png') }}" alt="" style="height:60px">
+                <h6 style="font-size: 17px">Carefully Curated</h6>
+                <p style="font-size:12px;color:#666">Each product is tested and selected by our team.</p>
+            </div>
+            <div class="fe-box reveal"
+                style="flex:1;min-width:170px; height: 300px;text-align:center;padding:20px; display: flex; flex-direction: column; justify-content: center;">
+                <img src="{{ url_for('static', filename='Features/f6.png') }}" alt="" style="height:60px">
+                <h6 style="font-size: 17px">Support First</h6>
+                <p style="font-size:12px;color:#666">Real people, fast replies, clear policies.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline / how we started -->
+    <section style="background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);padding:36px 20px;border-top:1px solid #eee">
+        <div style="max-width:1200px;margin:0 auto">
+            <h2 style="margin-bottom:35px; text-align: center;">Our story</h2>
+            <div class="timeline" style="display:flex;flex-direction:column;gap:18px">
+                <div style="display:flex;gap:12px;align-items:flex-start" class="reveal-left">
+                    <div style="width:10px;height:10px;background:#123423;border-radius:50%;margin-top:6px"></div>
+                    <div>
+                        <h4 style="margin:0 0 6px">2018 — Founded</h4>
+                        <p style="margin:0;color:#666">Started as a small local shop focused on curated apparel and
+                            accessories.</p>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start" class="reveal">
+                    <div style="width:10px;height:10px;background:#123423;border-radius:50%;margin-top:6px"></div>
+                    <div>
+                        <h4 style="margin:0 0 6px">2020 — Online launch</h4>
+                        <p style="margin:0;color:#666">Expanded to online sales and national shipping.</p>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start" class="reveal-left">
+                    <div style="width:10px;height:10px;background:#123423;border-radius:50%;margin-top:6px"></div>
+                    <div>
+                        <h4 style="margin:0 0 6px">2023 — New warehouse</h4>
+                        <p style="margin:0;color:#666">Improved delivery speed and returns handling with a new
+                            warehouse.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team grid -->
+    <section class="section-p1"
+        style="max-width:1200px;margin:40px auto; background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%) ; border-radius:8px; padding:36px 20px; border-top:1px solid #eee; border-bottom:1px solid #eee; display: flex; flex-direction: column; gap: 36px; align-items: center;">
+        <h2 style="text-align: center; margin-bottom: 5px;">Meet the team</h2>
+        <p
+            style="color:#666; background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%) ;margin-top:6px; font-size: 21px; font-weight: 300; font-style: italic; text-decoration: underline;">
+            People who make it happen</p>
+        <div class="pro-container" style="display:flex;gap:18px;flex-wrap:wrap;margin-top:5px">
+            <div class="pro reveal" style="width:320px;text-align:center;padding:12px;border-radius:8px;background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+                <img src="{{ url_for('static', filename='About/team1.jpeg') }}" alt="Team member"
+                    style="width:250px;border-radius:50%; height: 250px;">
+                <div class="des" style="padding-top:10px">
+                    <h5>Priya Sharma</h5>
+                    <span>Founder & CEO</span>
+                </div>
+            </div>
+
+            <div class="pro reveal" style="width:320px;text-align:center;padding:12px;border-radius:8px;background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+                <img src="{{ url_for('static', filename='About/team2.jpeg') }}" alt="Team member"
+                    style="width:250px;border-radius:50%; height: 250px;">
+                <div class="des" style="padding-top:10px">
+                    <h5>Rohit Deshmukh</h5>
+                    <span>Operations</span>
+                </div>
+            </div>
+
+            <div class="pro reveal" style="width:320px;text-align:center;padding:12px;border-radius:8px;background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+                <img src="{{ url_for('static', filename='About/team3.jpeg') }}" alt="Team member"
+                    style="width:250px;border-radius:50%; height: 250px; object-fit:cover;">
+                <div class="des" style="padding-top:10px">
+                    <h5>Aisha Khan</h5>
+                    <span>Customer Care</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Press / FAQ cards (different block from contact) -->
+    <section
+        style="background:  linear-gradient(180deg,
+            #050816 0%,
+            #0b1120 35%,
+            #111827 100%);padding:36px 20px; border-top:1px solid #eee; border-bottom:1px solid #eee; display: flex; justify-content: center; align-items: center ;min-width: 300px; padding: 30px 60px; margin: 60px 90px;">
+        <div
+            style="max-width:1200px;margin:0 auto;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center">
+            <div style="flex:1;min-width:320px" class="reveal"
+                style="display: flex; flex-direction: column; gap: 18px; align-items: flex-start;">
+                <h3>In the press</h3>
+                <p style="color:#666">We’ve been featured in local publications for product design and customer service.
+                </p>
+                <div style="display:flex;gap:8px;margin-top:12px">
+                    <img src="{{ url_for('static', filename='About/press1.jpg') }}" alt="press"
+                        style="width:84px;height:60px;object-fit:cover;border-radius:6px">
+                    <img src="{{ url_for('static', filename='About/press2.jpg') }}" alt="press"
+                        style="width:84px;height:60px;object-fit:cover;border-radius:6px">
+                    <img src="{{ url_for('static', filename='About/press3.jpg') }}" alt="press"
+                        style="width:84px;height:60px;object-fit:cover;border-radius:6px">
+                </div>
+            </div>
+
+            <div style="flex:1;min-width:320px" class="reveal-left">
+                <h3>Frequently asked</h3>
+                <div style="margin-top:12px">
+                    <details style="margin-bottom:8px">
+                        <summary>Where do you ship?</summary>
+                        <p style="margin:8px 0;color:#666">We ship across India and internationally to selected
+                            countries. Shipping costs vary by destination.</p>
+                    </details>
+                    <details style="margin-bottom:8px">
+                        <summary>Returns policy</summary>
+                        <p style="margin:8px 0;color:#666">30-day returns on unused items; see our policy page for
+                            details.</p>
+                    </details>
+                    <details style="margin-bottom:8px">
+                        <summary>Wholesale inquiries</summary>
+                        <p style="margin:8px 0;color:#666">Email wholesale@example.com for pricing and MOQ.</p>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Small CTA to shop -->
+    <section style="padding:28px 20px;max-width:1200px;margin:24px auto;text-align:center">
+        <h3>Ready to explore?</h3>
+        <p style="color:#666;margin-top:6px">Discover our latest arrivals and special offers.</p>
+        <a href="/shop" class="normal" style="margin-top:10px;display:inline-block">Shop new arrivals</a>
+    </section>
+
+    <footer class="section-p1" style="margin-top:18px">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon reveal-left">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById("changeTheme")?.addEventListener("click", () => document.body.classList.toggle("darkMode"));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        #prodetails {
+            margin-top: 120px;
+            padding: 40px;
+            color: white;
+        }
+
+        .MainDetails {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 50px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 30px rgba(0, 255, 242, 0.08);
+        }
+
+        /* ── LEFT IMAGE ── */
+        .single-pro-image {
+            flex-shrink: 0;
+            width: 40%;
+        }
+
+        /* Main image */
+        #MainImg {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            border-radius: 20px;
+            background: white;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* ── 3 THUMBNAILS ── */
+        .small-img-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .small-img-col {
+            flex: 1;
+            height: 90px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .small-img-col:hover,
+        .small-img-col.active-thumb {
+            border-color: #00fff2;
+            box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
+        }
+
+        /* All thumbnails — consistent style */
+        .small-img-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+        }
+
+        /* ── RIGHT DETAILS ── */
+        .single-pro-details {
+            width: 60%;
+            min-width: 0;
+        }
+
+        .single-pro-details h6 {
+            color: #00fff2;
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
+
+        .single-pro-details h4 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: white;
+        }
+
+        .single-pro-details h2 {
+            font-size: 36px;
+            color: #00fff2;
+            margin-bottom: 15px;
+        }
+
+        .product-description {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.75);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            display: block;
+            max-width: 100%;
+            font-size: 14px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .single-pro-details form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .single-pro-details input,
+        .single-pro-details select {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .single-pro-details select option {
+            background: #1a1a2e;
+        }
+
+        .single-pro-details button {
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #00fff2, #088178);
+            color: black;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .single-pro-details button:hover {
+            opacity: 0.85;
+        }
+
+        /* ── RELATED PRODUCTS ── */
+        #product2 {
+            margin-top: 60px;
+            padding: 0 40px 60px;
+            color: white;
+        }
+
+        #product2 h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        #product2 .pro-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        #product2 .pro {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #product2 .pro:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 255, 242, 0.12);
+        }
+
+        #product2 .pro a {
+            display: block;
+        }
+
+        #product2 .pro img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: white;
+            border-radius: 14px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #product2 .pro .des {
+            padding-top: 12px;
+        }
+
+        #product2 .pro .des span {
+            color: #00fff2;
+            font-size: 13px;
+        }
+
+        #product2 .pro .des h5 {
+            color: white;
+            font-size: 15px;
+            margin: 6px 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #product2 .pro .des h4 {
+            color: #00fff2;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        @media (max-width: 900px) {
+            .MainDetails {
+                flex-direction: column;
+            }
+
+            .single-pro-image,
+            .single-pro-details {
+                width: 100%;
+            }
+
+            #prodetails,
+            #product2 {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body class="darkMode">
+    <header>
+        <a href="/home" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+        </a>
+        <ul id="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div class="auth-nav">
+            {% if user %}
+            <div class="profile-dropdown">
+                <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
+                <span class="profile-name">{{ user.name }}</span>
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+                <div class="dropdown-menu">
+                    {% if user.role == 'admin' %}
+                    <a href="/admin/orders"><i class="fas fa-cog"></i> Admin Panel</a>
+                    {% elif user.role == 'seller' %}
+                    <a href="/seller/dashboard"><i class="fas fa-store"></i> Seller Dashboard</a>
+                    {% endif %}
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> My Cart</a>
+                    <a href="/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="/login" class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- PRODUCT DETAILS -->
+    <section id="prodetails" class="section-p1">
+        <div class="MainDetails">
+            {% if product %}
+
+            <!-- LEFT: IMAGE + 3 THUMBNAILS -->
+            <div class="single-pro-image">
+                <img src="{{ product.img }}" id="MainImg" alt="{{ product.name }}">
+
+                <div class="small-img-group">
+                    {% for img_url in thumb_images %}
+                    <div class="small-img-col {% if loop.first %}active-thumb{% endif %}">
+                        <img src="{{ img_url }}" class="small-img" alt="View {{ loop.index }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- RIGHT: DETAILS -->
+            <div class="single-pro-details">
+                <h6>{{ product.brand }}</h6>
+                <h4>{{ product.name }}</h4>
+                <h2>₹{{ product.price }}</h2>
+
+                <!-- RATING -->
+                <div style="margin-bottom:12px;">
+                    {% if product.avg_rating %}
+                    {% set rating = product.avg_rating|float %}
+                    {% for i in range(1, 6) %}
+                    {% if i <= rating %} <i class="fas fa-star" style="color:gold;"></i>
+                        {% elif i - 0.5 <= rating %} <i class="fas fa-star-half-alt" style="color:gold;"></i>
+                            {% else %}
+                            <i class="far fa-star" style="color:gold;"></i>
+                            {% endif %}
+                            {% endfor %}
+                            <span style="color:rgba(255,255,255,0.5); font-size:13px; margin-left:6px;">
+                                ({{ product.ratingCount|int if product.ratingCount else 0 }} reviews)
+                            </span>
+                            {% endif %}
+                </div>
+
+                <h4 style="font-size:18px; color:#00fff2;">Product Details</h4>
+                <span class="product-description">{{ product.description }}</span>
+
+                <div style="margin-top:25px;">
+                    <form action="/add-to-cart" method="POST">
+                        <input type="hidden" name="p_id" value="{{ product.p_id }}">
+                        <input type="hidden" name="price" value="{{ product.price }}">
+                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                        <input type="hidden" name="img" value="{{ product.img }}">
+
+                        <select name="size">
+                            <option value="">Select Size</option>
+                            <option>Small</option>
+                            <option>Medium</option>
+                            <option>Large</option>
+                            <option>XL</option>
+                        </select>
+
+                        <input type="number" name="quantity" value="1" min="1">
+                        <input type="text" name="customer_name" placeholder="Your Name" required>
+                        <input type="email" name="customer_email" placeholder="Your Email" required>
+
+                        <button type="submit">🛒 Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <h2>Product not found.</h2>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- RELATED PRODUCTS -->
+    <section id="product2" class="section-p1">
+        <h2>Related Products</h2>
+        {% if related_products %}
+        <div class="pro-container">
+            {% for p in related_products %}
+            <div class="pro">
+                <a href="{{ url_for('product', p_id=p.p_id) }}">
+                    <img src="{{ p.img }}" alt="{{ p.name }}">
+                </a>
+                <div class="des">
+                    <span>{{ p.brand }}</span>
+                    <h5>{{ p.name }}</h5>
+                    <h4>₹{{ p.price }}</h4>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align:center; color:rgba(255,255,255,0.5);">No related products found.</p>
+        {% endif %}
+    </section>
+
+    <footer class="section-p1" id="footer">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="/login">Sign In</a>
+            <a href="/cart">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="App Store">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="Google Play">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="Payment Gateways">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+    <script>
+        const MainImg = document.getElementById("MainImg");
+        const thumbCols = document.querySelectorAll(".small-img-col");
+
+        // Filter effects applied to main image on thumb click
+        thumbCols.forEach(col => {
+            col.addEventListener("click", () => {
+                thumbCols.forEach(c => c.classList.remove("active-thumb"));
+                col.classList.add("active-thumb");
+                MainImg.src = col.querySelector(".small-img").src;
+                MainImg.style.filter = "none";
+            });
+        });
+    </script>
+</body>
+
+</html>

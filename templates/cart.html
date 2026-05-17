@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        /* ============================= */
+        /* CART CONTAINER                */
+        /* ============================= */
+
+        .cart-container {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+
+        .cart-container h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        /* ============================= */
+        /* TABLE                         */
+        /* ============================= */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        table th {
+            background: #088178;
+            color: white;
+        }
+
+        table img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        /* ============================= */
+        /* CART SUMMARY & ACTIONS        */
+        /* ============================= */
+
+        .cart-summary {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #088178;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn-continue {
+            padding: 12px 25px;
+            background: white;
+            color: #088178;
+            border: 2px solid #088178;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-continue:hover {
+            background: #088178;
+            color: white;
+        }
+
+        .btn-pay {
+            padding: 12px 30px;
+            background: #088178;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn-pay:hover {
+            background: #065f5a;
+        }
+
+        .btn-remove {
+            padding: 5px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        /* ============================= */
+        /* EMPTY CART                    */
+        /* ============================= */
+
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-cart h3 {
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .empty-cart a button {
+            padding: 12px 30px;
+            background: #088178;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* ============================= */
+        /* FOOTER                        */
+        /* ============================= */
+
+        footer {
+            padding: 40px 20px;
+        }
+
+        footer .col {
+            flex-basis: 23%;
+        }
+
+        footer .col.install .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        footer .col.install .row img {
+            width: 48%;
+        }
+
+        footer .copyright {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* ============================= */
+        /* TABLET RESPONSIVE (1024px)    */
+        /* ============================= */
+
+        @media (max-width: 1024px) {
+
+            .cart-container {
+                padding: 15px;
+            }
+
+            table th,
+            table td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+
+            table img {
+                width: 50px;
+                height: 50px;
+            }
+
+        }
+
+        /* ============================= */
+        /* MOBILE RESPONSIVE (768px)     */
+        /* ============================= */
+
+        @media (max-width: 768px) {
+
+            .cart-container {
+                margin: 60px auto;
+                padding: 15px;
+            }
+
+            .cart-container h2 {
+                font-size: 22px;
+            }
+
+            /* HIDE TABLE HEADERS ON MOBILE */
+            table thead {
+                display: none;
+            }
+
+            /* MAKE TABLE ROWS BLOCK ON MOBILE */
+            table,
+            table tbody,
+            table tr,
+            table td {
+                display: block;
+                width: 100%;
+            }
+
+            table tr {
+                border: 1px solid #ddd;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                padding: 10px;
+                position: relative;
+            }
+
+            table td {
+                text-align: left;
+                padding: 8px 10px;
+                border: none;
+                font-size: 14px;
+            }
+
+            /* ADD LABELS BEFORE EACH CELL */
+            table td:nth-child(1)::before {
+                content: "";
+            }
+
+            table td:nth-child(2)::before {
+                content: "Product: ";
+                font-weight: bold;
+            }
+
+            table td:nth-child(3)::before {
+                content: "Price: ";
+                font-weight: bold;
+            }
+
+            table td:nth-child(4)::before {
+                content: "Qty: ";
+                font-weight: bold;
+            }
+
+            table td:nth-child(5)::before {
+                content: "Subtotal: ";
+                font-weight: bold;
+            }
+
+            table td:nth-child(6)::before {
+                content: "";
+            }
+
+            table td img {
+                width: 80px;
+                height: 80px;
+                display: block;
+                margin: 0 auto 10px auto;
+            }
+
+            .cart-summary {
+                text-align: center;
+                font-size: 18px;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-continue {
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .btn-pay {
+                width: 100%;
+            }
+
+            footer {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            footer .col {
+                width: 100%;
+            }
+
+        }
+
+        /* ============================= */
+        /* SMALL MOBILE (480px)          */
+        /* ============================= */
+
+        @media (max-width: 480px) {
+
+            .cart-container {
+                margin: 40px auto;
+                padding: 10px;
+            }
+
+            .cart-container h2 {
+                font-size: 20px;
+            }
+
+            table td {
+                font-size: 13px;
+            }
+
+            table td img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .cart-summary {
+                font-size: 16px;
+            }
+
+            .btn-continue,
+            .btn-pay {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            .empty-cart h3 {
+                font-size: 18px;
+            }
+
+            footer .col {
+                width: 100%;
+            }
+
+        }
+    </style>
+</head>
+
+<body class="darkMode">
+
+    <header>
+
+        <a href="/home" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+        </a>
+
+        <ul id="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <!-- AUTH SECTION -->
+        <div class="auth-nav">
+
+            {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                    <a href="/admin/orders">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>
+                    {% elif user.role == 'seller' %}
+                    <a href="/seller/dashboard">
+                        <i class="fas fa-store"></i> Seller Dashboard
+                    </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+            {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login" class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+
+    <div class="cart-container">
+
+        <h2>🛒 Your Cart</h2>
+
+        {% if cart %}
+
+        <!-- CART ITEMS TABLE -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <td><img src="{{ item.img }}" alt="{{ item.name }}"></td>
+                    <td>{{ item.name }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price * item.quantity }}</td>
+                    <td>
+                        <form action="/remove-from-cart" method="POST">
+                            <input type="hidden" name="order_id" value="{{ item.order_id }}">
+                            <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- TOTAL AMOUNT -->
+        <div class="cart-summary">
+            Total: ₹{{ total_price }}
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="cart-actions">
+
+            <!-- CONTINUE SHOPPING -->
+            <a href="/shop" class="btn-continue">← Continue Shopping</a>
+
+            <!-- PROCEED TO PAYMENT -->
+            <form action="/payment" method="POST">
+
+                {% for item in cart %}
+                <input type="hidden" name="order_id" value="{{ item.order_id }}">
+                <input type="hidden" name="p_id" value="{{ item.p_id }}">
+                <input type="hidden" name="price" value="{{ item.price }}">
+                <input type="hidden" name="quantity" value="{{ item.quantity }}">
+                {% endfor %}
+
+                <input type="hidden" name="total_amount" value="{{ total_price }}">
+
+                <button type="submit" class="btn-pay">Proceed to Payment 💳</button>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY CART -->
+        <div class="empty-cart">
+            <h3>Your cart is empty!</h3>
+            <a href="/shop">
+                <button>Continue Shopping 🛍️</button>
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <footer class="section-p1">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon reveal-left">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="/cart">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="App Store">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="Google Play">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="Payment">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

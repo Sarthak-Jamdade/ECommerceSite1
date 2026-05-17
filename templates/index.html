@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECommerce Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="darkMode">
+    <!-- Loading Scrren Play Video -->
+    <div class="Loading">
+        <video src="{{ url_for('static', filename='Hero Section/LoadingBasket.gif') }}" autoplay muted loop></video>
+    </div>
+    <header>
+
+        <a href="/home" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+        </a>
+
+        <ul id="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <!-- AUTH SECTION -->
+        <div class="auth-nav">
+
+            {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                    <a href="/admin/orders">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>
+                    {% elif user.role == 'seller' %}
+                    <a href="/seller/dashboard">
+                        <i class="fas fa-store"></i> Seller Dashboard
+                    </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+            {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login" class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+    <section id="hero">
+        <h4>Trade-in-offer</h4>
+        <h2>Super value deals</h2>
+        <h1>On all products</h1>
+        <p>Save more with coupons & up to 70% off!</p>
+        <button>Shop Now</button>
+    </section>
+
+    <section id="feature" class="section-p1">
+        <div class="feature-heading">
+
+            <h2>Why Shop With Us</h2>
+
+            <p>Premium Services For Better Shopping Experience</p>
+
+        </div>
+        <div class="feature-container">
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f1.png" alt=""> -->
+                <img src="{{ url_for('static', filename='Features/f1.png') }}">
+                <h6>Free Shipping</h6>
+            </div>
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f2.png" alt=""> -->
+                <img src="{{ url_for('static', filename='Features/f2.png') }}">
+                <h6>Online order</h6>
+            </div>
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f3.png" alt=""> -->
+                <img src="{{ url_for('static', filename='Features/f3.png') }}">
+                <h6>Save Money</h6>
+            </div>
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f4.png" alt=""> -->
+                <img src="{{ url_for('static', filename='Features/f4.png') }}">
+                <h6>Promotion</h6>
+            </div>
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f5.png" alt="">  -->
+                <img src="{{ url_for('static', filename='Features/f5.png') }}">
+                <h6>Happy Sell</h6>
+            </div>
+            <div class="fe-box reveal">
+                <!-- <img src="Features/f6.png" alt=""> -->
+                <img src="{{ url_for('static', filename='Features/f6.png') }}">
+                <h6>F24/7 Support</h6>
+            </div>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2 class="reveal">Featured Products</h2>
+        <p class="reveal">Summer Collection New Modern Design</p>
+        <div class="pro-container">
+
+            {% for p in products %}
+
+            <div class="pro reveal">
+                <a href="{{ url_for('product', p_id=p.p_id) }}">
+                    <img src="{{ p.img }}" alt="product">
+                </a>
+                <div class="des">
+                    <span>{{ p.brand }}</span>
+                    <h5>
+                        <a href="{{ url_for('product', p_id=p.p_id) }}" style="color: inherit; text-decoration: none;">
+                            {{ p.name }}
+                        </a>
+                    </h5>
+                    <div class="star">
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fa-regular fa-star" style="color: gold;"></i>
+                    </div>
+                    <h4>₹{{ p.price }}</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart Cart"></i></a>
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+    <section id="banner" class="section-m1 section-p1 reveal reveal">
+        <h4>Repair Services</h4>
+        <h2>Up to <span>70% off</span>- All t- shirts & Accessories</h2>
+        <button class="noraml">Explore Now</button>
+    </section>
+
+    <section id="product2" class="section-p1">
+        <h2 class="reveal">New Arrivals</h2>
+        <p class="reveal">Summer Collection New Modern Design</p>
+        <div class="pro-container">
+
+            {% for p in new_products %}
+
+            <div class="pro reveal-left">
+
+                <img src="{{ p.img }}" alt="product">
+
+                <div class="des">
+
+                    <span>{{ p.brand }}</span>
+
+                    <h5>{{ p.name }}</h5>
+
+                    <div class="star">
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fas fa-star" style="color: gold;"></i>
+                        <i class="fa-regular fa-star" style="color: gold;"></i>
+                    </div>
+
+                    <h4>₹{{ p.price }}</h4>
+
+                </div>
+
+                <a href="#"><i class="fas fa-shopping-cart Cart"></i></a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <section id="sm-banner" class="section-p1">
+        <div class="banner-box reveal-left">
+            <h4>Crazy deals</h4>
+            <h2>Buy 1 get 1 free</h2>
+            <span>The best classic dress is on sale at cara</span>
+            <button class="white">Learn More</button>
+        </div>
+        <div class="banner-box reveal-left">
+            <h4>Spring/Summer</h4>
+            <h2>Upcomming season</h2>
+            <span>The best classic dress is on sale at cara</span>
+            <button class="white">Collection</button>
+        </div>
+    </section>
+
+    <section id="banner3">
+        <div class="banner-box reveal-left">
+            <h2>SEASON SALE</h2>
+            <h3>Winter Collection -50% OFF</h3>
+        </div>
+        <div class="banner-box reveal-left">
+            <h2>NEW FOOTWEAR COLLECTION</h2>
+            <h3>Spring / Summer 2025</h3>
+        </div>
+        <div class="banner-box reveal-left">
+            <h2>T-SHIRTS</h2>
+            <h3>New Trendy Prints</h3>
+        </div>
+    </section>
+
+    <section id="newsLetter" class="section-m1 section-p1 reveal">
+        <div class="newsText reveal">
+            <h4>Sign Up for NewsLetter</h4>
+            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+        </div>
+        <div class="form reveal-left">
+            <input type="text" placeholder="Your email address">
+            <button class="normal">Sign Up</button>
+            <a href="javascript:void(0)" id="open-modal">Don't have account</a>
+        </div>
+    </section>
+    <footer class="section-p1 reveal">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon reveal-left">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+    <!-- Password visibility toggle and flash message handling and login password toggle  -->
+    <!-- Account Modal -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Create an Account</h2>
+            <div id="flash-message" class="flash-message"></div>
+            <form id="register-form">
+                <input type="text" class="Cleartext" placeholder="Full Name" required>
+                <input type="email" class="CleartextEmail" placeholder="Email" required>
+                <div class="password-wrapper">
+                    <input type="password" class="CleartextPassword" placeholder="Password" required>
+                    <i class="fa-solid fa-eye toggle-password" id="toggle-pwd"></i>
+                </div>
+                <button type="submit" class="normal" id="closed">Register</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script>
+
+        document.getElementById("changeTheme")?.addEventListener("click", () => {
+
+            document.body.classList.toggle("darkMode");
+
+        });
+
+    </script>
+
+</body>
+
+</html>

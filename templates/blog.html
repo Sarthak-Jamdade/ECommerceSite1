@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECommerce Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="darkMode">
+
+   <header>
+
+    <a href="/home" class="logo">
+        <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+    </a>
+
+    <ul id="nav-links">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/shop">Shop</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+
+    <!-- AUTH SECTION -->
+    <div class="auth-nav">
+
+        {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}"
+                     alt="{{ user.name }}"
+                     class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                        <a href="/admin/orders">
+                            <i class="fas fa-cog"></i> Admin Panel
+                        </a>
+                    {% elif user.role == 'seller' %}
+                        <a href="/seller/dashboard">
+                            <i class="fas fa-store"></i> Seller Dashboard
+                        </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+        {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login"    class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+        {% endif %}
+
+    </div>
+
+</header>
+
+    <section id="page-header" class="blog-header">
+        <h2>#readmore</h2>
+        <p>Read all case studies about our products!</p>
+    </section>
+
+    <section id="Blog">
+        <div class="Blog_Box">
+            <div class="Blog-img">
+                <img src="{{ url_for('static', filename='Blog/b1 (1).jpg') }}" alt="">
+            </div>
+            <div class="Blog-details">
+                <h4>The Cotton-Jersey Zip-Up Hoodie</h4>
+                <p>Discover our premium cotton-jersey zip-up hoodie, perfect for everyday comfort and style. Made with
+                    high-quality materials and expert craftsmanship.</p>
+                <a href="#">CONTINUE READING</a>
+            </div>
+            <h1>13/01</h1>
+        </div>
+
+        <div class="Blog_Box">
+            <div class="Blog-img">
+                <img src="{{ url_for('static', filename='Blog/b2 (1).jpg') }}" alt="">
+            </div>
+            <div class="Blog-details">
+                <h4>How to style a Quiff</h4>
+                <p>Learn how to style your hair with a quiff for a trendy look.</p>
+                <a href="#">CONTINUE READING</a>
+            </div>
+            <h1>16/06</h1>
+        </div>
+
+        <div class="Blog_Box">
+            <div class="Blog-img">
+                <img src="{{ url_for('static', filename='Blog/b3.jpg') }}" alt="">
+            </div>
+            <div class="Blog-details">
+                <h4>Must-Have Skater Girl Items</h4>
+                <p>Must-have items for every skater girl, from trendy apparel to essential accessories!</p>
+                <a href="#">CONTINUE READING</a>
+            </div>
+            <h1>18/09</h1>
+        </div>
+
+        <div class="Blog_Box">
+            <div class="Blog-img">
+                <img src="{{ url_for('static', filename='Blog/b4 (1).jpg') }}" alt="">
+            </div>
+            <div class="Blog-details">
+                <h4>Runway-inspired Trends</h4>
+                <p>Discover the latest trends in fashion with our exclusive collection, designed for comfort and style.
+                </p>
+                <a href="#">CONTINUE READING</a>
+            </div>
+            <h1>20/08</h1>
+        </div>
+
+        <div class="Blog_Box">
+            <div class="Blog-img">
+                <img src="{{ url_for('static', filename='Blog/b6.jpg') }}" alt="">
+            </div>
+            <div class="Blog-details">
+                <h4>AW20 Menswear Trends</h4>
+                <p>Explore the hottest menswear trends for Autumn/Winter 2020, from oversized silhouettes to bold color
+                    palettes and statement accessories that define this season's fashion landscape.</p>
+                <a href="#">CONTINUE READING</a>
+            </div>
+            <h1>22/07</h1>
+        </div>
+    </section>
+
+    <!-- paggination will be added from script.js -->
+
+    <div class="paggination" id="paggination">
+        <!-- Paggination links will be added here by JS -->
+    </div>
+
+    <section id="newsLetter" class="section-m1 section-p1 reveal">
+        <div class="newsText reveal">
+            <h4>Sign Up for NewsLetter</h4>
+            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+        </div>
+        <div class="form reveal-left">
+            <input type="text" placeholder="Your email address">
+            <button class="normal">Sign Up</button>
+            <a href="javascript:void(0)" id="open-modal">Don't have account</a>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon reveal-left">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+    <script>
+        // When Load then only 2 rows are visible
+        const totalPages = 4; // Total number of pages
+        const pagginationContainer = document.getElementById('paggination');
+
+        function goToPage(page) {
+            // Logic to load products for the selected page
+            console.log('Go to page:', page);
+            // You can call a function here to fetch and display products for the selected page
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = "#";
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                goToPage(i);
+            });
+            pagginationContainer.appendChild(pageLink);
+        }
+
+        // Add previous and next buttons
+        const prevLink = document.createElement('a');
+        prevLink.href = "#";
+        prevLink.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
+        prevLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            goToPage(Math.max(1, currentPage - 1));
+        });
+        pagginationContainer.insertBefore(prevLink, pagginationContainer.firstChild);
+        const nextLink = document.createElement('a');
+        nextLink.href = "#";
+        nextLink.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
+        nextLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            goToPage(Math.min(totalPages, currentPage + 1));
+        });
+
+        // PRODUCT IMAGE SWITCH
+        var MainImg = document.getElementById("MainImg");
+        var smallimg = document.getElementsByClassName("small-img");
+
+        for (let i = 0; i < smallimg.length; i++) {
+
+            smallimg[i].onclick = function () {
+
+                MainImg.src = this.src;
+
+                for (let j = 0; j < smallimg.length; j++) {
+                    smallimg[j].classList.remove("active");
+                }
+
+                this.classList.add("active");
+            }
+        }
+
+        // DARK MODE
+        document.getElementById("changeTheme")?.addEventListener("click", () => {
+
+            document.body.classList.toggle("darkMode");
+
+        });
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

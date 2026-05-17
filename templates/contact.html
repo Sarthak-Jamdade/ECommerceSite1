@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Ecommerce Site</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="darkMode">
+    <header>
+
+        <a href="/home" class="logo">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" class="logo">
+        </a>
+
+        <ul id="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <!-- AUTH SECTION -->
+        <div class="auth-nav">
+
+            {% if user %}
+
+            <!-- LOGGED IN → SHOW PROFILE -->
+            <div class="profile-dropdown">
+
+                <img src="{{ user.profile_photo }}" alt="{{ user.name }}" class="profile-pic">
+
+                <span class="profile-name">{{ user.name }}</span>
+
+                <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+
+                <div class="dropdown-menu">
+
+                    {% if user.role == 'admin' %}
+                    <a href="/admin/orders">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>
+                    {% elif user.role == 'seller' %}
+                    <a href="/seller/dashboard">
+                        <i class="fas fa-store"></i> Seller Dashboard
+                    </a>
+                    {% endif %}
+
+                    <a href="/cart">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                    </a>
+
+                    <a href="/logout" style="color: #e74c3c;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+
+                </div>
+            </div>
+
+            {% else %}
+
+            <!-- NOT LOGGED IN → SHOW LOGIN/SIGNUP -->
+            <a href="/login" class="btn-signin">Sign In</a>
+            <a href="/register" class="btn-signup">Sign Up</a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+    <section id="hero">
+        <h4>Need help?</h4>
+        <h2>Contact Our Support Team</h2>
+        <h1>We're here to help</h1>
+        <p>Reach out with questions about orders, products, or shipping.</p>
+        <button onclick="location.href='/contact'">Contact Us</button>
+    </section>
+
+    <section id="contact-overview" class="section-p1">
+        <div class="feature-heading">
+            <h2>Contact Details</h2>
+            <p>Fast responses, friendly service, and easy support.</p>
+        </div>
+        <div class="contact-cards">
+            <div class="card reveal">
+                <i class="fa-solid fa-phone"></i>
+                <h4>Phone</h4>
+                <p>+01 2222 365 / (+91) 01 2345 6789</p>
+            </div>
+            <div class="card reveal">
+                <i class="fa-solid fa-envelope"></i>
+                <h4>Email</h4>
+                <p>support@example.com</p>
+            </div>
+            <div class="card reveal">
+                <i class="fa-solid fa-location-dot"></i>
+                <h4>Address</h4>
+                <p>562 Wellington Road, Street 32, San Francisco</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact-form-map" class="section-p1">
+        <div class="contact-content">
+            <div class="form-container reveal"
+                style="background: linear-gradient(135deg, #36374c 0%, #1397 100%); padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <h3 style="color: #fff; margin-bottom: 25px; font-size: 24px;">Send us a message</h3>
+                <form action="/contact" method="POST">
+                    <input type="text" name="name" placeholder="Your Name" required
+                        style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333;">
+                    <input type="email" name="email" placeholder="Your Email" required
+                        style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333;">
+                    <input type="text" name="subject" placeholder="Subject"
+                        style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333;">
+                    <textarea name="message" rows="6" placeholder="Your Message" required
+                        style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333; font-family: Arial, sans-serif; resize: vertical;"></textarea>
+                    <button type="submit"
+                        style="width: 100%; padding: 12px; background: #fff; color: #667eea; border: none; border-radius: 5px; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.3s ease;">Submit</button>
+                </form>
+            </div>
+            <div class="map-container reveal-left">
+                <h3>Visit our store</h3>
+                <div class="map-frame">
+                    <iframe
+                        src="https://maps.google.com/maps?q=Pimpri%20Chinchwad%20College%20Of%20Engineering&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                        width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="section-p1 reveal">
+        <div class="col">
+            <img src="{{ url_for('static', filename='Hero Section/logo (1).png') }}" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+            <p><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon reveal-left">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="{{ url_for('static', filename='Footer/app.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='Footer/play.jpg') }}" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="{{ url_for('static', filename='Footer/pay.png') }}" alt="">
+        </div>
+        <div class="copyright">
+            <p>@ 2025, Ecommerce Site - HTML CSS JS Template</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById("changeTheme")?.addEventListener("click", () => {
+            document.body.classList.toggle("darkMode");
+        });
+    </script>
+</body>
+
+</html>
