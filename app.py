@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-import mysql.connector
-from mysql.connector import pooling
+import psycopg2
 import os
 import json
 from functools import wraps
