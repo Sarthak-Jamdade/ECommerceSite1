@@ -27,11 +27,12 @@ def get_db():
 # IMAGE HELPERS
 # -----------------------------------------------
 FIRST_IMG = """
-    CASE
-        WHEN img LIKE '[%%'
-        THEN TRIM('"' FROM (img::json->0)::text)
-        ELSE img
-    END AS img
+    (
+        SELECT value
+        FROM json_array_elements_text(img::json) AS value
+        WHERE value != ''
+        LIMIT 1
+    ) AS img
 """
 
 def parse_all_images(img_str):
