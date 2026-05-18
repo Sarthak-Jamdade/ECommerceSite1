@@ -926,8 +926,8 @@ def add_to_cart():
                 (customer_name, customer_email, total_amount, payment_status, order_status)
             VALUES (%s, %s, %s, 'Pending', 'Pending')
         """, (customer_name, customer_email, total_amount))
+        order_id = cursor.fetchone()[0]
         conn.commit()
-        order_id = cursor.lastrowid
         cursor.close()
         conn.close()
 
