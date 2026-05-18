@@ -650,15 +650,25 @@ def allowed_file(filename):
 # Your DB stores img as: ["url1", "url2", ...]
 # -----------------------------------------------
 def get_first_img(img_str):
+
     if not img_str:
         return ""
+
     try:
+        # already list
+        if isinstance(img_str, list):
+            return img_str[0]
+
+        # convert JSON string → list
         imgs = json.loads(img_str)
-        if isinstance(imgs, list) and imgs:
-            return imgs[0]
-        return img_str
+
+        if isinstance(imgs, list) and len(imgs) > 0:
+            return str(imgs[0]).strip()
+
+        return str(img_str)
+
     except Exception:
-        return img_str
+        return str(img_str).strip()
 
 
 def fix_imgs(product_list):
@@ -766,6 +776,8 @@ def shop():
 
     # ── Fix images ──
     fix_imgs(products)
+    print(products[0]["img"])
+    print(type(products[0]["img"]))
 
     return render_template("shop.html",
         products = products,
