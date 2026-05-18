@@ -1098,7 +1098,8 @@ def register():
             flash("Account created successfully! Please login.", "success")
             return redirect(url_for("login"))
 
-        
+        except:
+            conn.rollback()
             flash("An account with that email already exists.", "error")
             return redirect(url_for("register"))
         finally:
