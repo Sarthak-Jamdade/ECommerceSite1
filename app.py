@@ -655,17 +655,17 @@ def get_first_img(img_str):
         return ""
 
     try:
-        # already list
+        # If PostgreSQL already returned list
         if isinstance(img_str, list):
-            return img_str[0]
+            return str(img_str[0]).strip()
 
-        # convert JSON string → list
+        # Convert JSON string to Python list
         imgs = json.loads(img_str)
 
         if isinstance(imgs, list) and len(imgs) > 0:
             return str(imgs[0]).strip()
 
-        return str(img_str)
+        return str(img_str).strip()
 
     except Exception:
         return str(img_str).strip()
