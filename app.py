@@ -432,7 +432,7 @@
 #             conn.commit()
 #             flash("Account created successfully! Please login.", "success")
 #             return redirect(url_for("login"))
-#         except psycopg2.errors.UniqueViolation:
+#         
 #             conn.rollback()
 #             flash("An account with that email already exists.", "error")
 #             return redirect(url_for("register"))
@@ -1098,7 +1098,7 @@ def register():
             flash("Account created successfully! Please login.", "success")
             return redirect(url_for("login"))
 
-        except mysql.connector.IntegrityError:
+        
             flash("An account with that email already exists.", "error")
             return redirect(url_for("register"))
         finally:
